@@ -2,6 +2,7 @@ package br.com.ecommerce.pagamento.dao;
 
 import br.com.ecommerce.pagamento.config.DatabaseConnection;
 import br.com.ecommerce.pagamento.exception.PagamentoException;
+import br.com.ecommerce.pagamento.model.Pagamento;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,6 +18,28 @@ public class PagamentoDAOImpl implements PagamentoDAO {
 
     public PagamentoDAOImpl() {
         this.connection = DatabaseConnection.getConnection();
+        criarTabelaSeNaoExistir();
+    }
+
+    private void criarTabelaSeNaoExistir() {
+        String sql = "CREATE TABLE T_PAGAMENTO (" +
+                "id VARCHAR2(36) PRIMARY KEY, " +
+                "metodo VARCHAR2(50) NOT NULL, " +
+                "valor NUMBER(10,2) NOT NULL, " +
+                "status VARCHAR2(20) NOT NULL" +
+                ")";
+
+        try (java.sql.Statement stmt = connection.createStatement()) {
+            stmt.execute(sql);
+            System.out.println("Tabela T_PAGAMENTO criada com sucesso no Oracle!");
+        } catch (SQLException e) {
+            // O erro 955 do Oracle significa "nome já usado por um objeto existente"
+            if (e.getErrorCode() == 955) {
+                System.out.println("A tabela T_PAGAMENTO já existe. Nenhuma ação necessária.");
+            } else {
+                System.err.println("Erro ao tentar criar a tabela: " + e.getMessage());
+            }
+        }
     }
 
     @Override

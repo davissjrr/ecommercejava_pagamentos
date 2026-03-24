@@ -1,5 +1,7 @@
 package br.com.ecommerce.pagamento.dao;
 
+import br.com.ecommerce.pagamento.model.Pagamento;
+
 import java.util.List;
 
 public interface PagamentoDAO {
